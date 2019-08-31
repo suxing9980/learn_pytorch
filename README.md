@@ -1,2 +1,2 @@
-# learn_pytorch
-codes and notes with learning pytorch
+# learn_tensorflow
+codes and notes with learning tensorflow
