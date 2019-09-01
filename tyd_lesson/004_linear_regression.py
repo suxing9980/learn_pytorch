@@ -11,11 +11,14 @@ for i in range(num_points):
     vectors_set.append([x1, y1])
 
 # 生成一些样本
-x_data = [v[0] for v in vectors_set]
-y_data = [v[1] for v in vectors_set]
+x_data = [v[0] for v in vectors_set]    # 取出所有x
+print('x_data type=',type(x_data))
+y_data = [v[1] for v in vectors_set]    # 取出所有Y
+print('y_data type=',type(y_data))
 plt.scatter(x_data, y_data, c='r')
 plt.show()
 
+# 训练的是w与b，所以进行w与b的变量初始化
 # 生成1维的W矩阵，取值是【-1，1】之间的随机数
 W = tf.Variable(tf.random_uniform([1], -1.0, 1.0),name="W")
 # 生成1维的b矩阵，初始值是0
@@ -26,7 +29,7 @@ y = W*x_data +b
 # 以预估值y与实际值y_data之间的均方误差作为损失
 loss = tf.reduce_mean(tf.square(y - y_data), name='loss')
 # 采用梯度下降法来优化参数
-optimizer = tf.train.GradientDescentOptimizer(0.5)
+optimizer = tf.train.GradientDescentOptimizer(0.5) # 0.5学习率
 # 训练过程就是最小化这个误差值
 train = optimizer.minimize(loss, name='train')
 
