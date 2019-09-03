@@ -34,8 +34,8 @@ cost = tf.reduce_mean(-tf.reduce_sum(y*tf.log(actv), reduction_indices=1)) #逻�
 learning_rate = 0.01
 optm = tf.train.GradientDescentOptimizer(learning_rate).minimize(cost) #梯度下降就优化
 # 模型搭建好了来测试
-pred = tf.equal(tf.argmax(actv, 1), tf.argmax(y, 1))
-accr = tf.reduce_mean(tf.cast(pred, "float"))
+pred = tf.equal(tf.argmax(actv, 1), tf.argmax(y, 1)) # 预测值索引与真实label值索引是不是一样,1表示按照行求,返回true与false
+accr = tf.reduce_mean(tf.cast(pred, "float")) #true与false转行成0与1，精确 所有值加在一起就均值，0与1
 # INITIALIZER
 init = tf.global_variables_initializer()
 sess = tf.InteractiveSession()
@@ -45,8 +45,33 @@ arr = np.array([[31,23,4,24,27,34],
                 [13,30,21,19,7,9],
                 [16,1,26,32,2,29],
                 [17,12,5,11,10,15]])
-tf.rank(arr).eval() #rank查看维度
+print(tf.rank(arr).eval()) #rank查看维度 2维
+print(tf.shape(arr).eval()) #几行几列 6行6列
+print(tf.argmax(arr, 0).eval()) #返回最大值的索引 每一个列上最大值的索引 变成1就是按照行求最大
 
+training_epochs =50 #所有样本迭代一次
+batch_size =100     #每进行一次迭代选择多少样本
+display_step =5     #展示
+# SESSION
+sess = tf.Session()
+sess.run(init)
+#MINI-BATCH LEARNING
+for epoch in range(training_epochs):
+    avg_cost = 0 #先让损失值等于0
+    num_batch = int(mnist.train.num_examples/batch_size)
+    for i in range(num_batch):
+        batch_xs, batch_ys = mnist.train.next_batch(batch_size) #一个是data、一个是label，一步步返回
+        sess.run(optm, feed_dict={x:batch_xs, y:batch_ys}) #run的梯度下降求解
+        feeds = {x:batch_xs, y:batch_ys}
+        avg_cost += sess.run(cost, feed_dict=feeds)/num_batch #run损失函数
+    # 打印当前的效果
+    if(epoch % display_step == 0):
+        feeds_train = {x:batch_xs, y:batch_ys}
+        feeds_test = {x:mnist.test.images, y:mnist.test.labels}
+        train_acc = sess.run(accr, feed_dict=feeds_train)
+        test_acc = sess.run(accr, feed_dict=feeds_test)
+        print('Epoch: %03d/%03d cost:%.9f train_acc: %.3f test_acc: %.3f' % (epoch, training_epochs, avg_cost, train_acc,test_acc))
+print('Done')
 
 
 
