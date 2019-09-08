@@ -14,7 +14,7 @@ testimg = mnist.test.images
 testlabels = mnist.test.labels
 print('MNIST loaded')
 
-print(trainimg.shape) #28*28 784个像素点
+print(trainimg.shape) #28*28 784个像素点 n*784 n个样本数，每个数据集28*28像素大小
 print(trainlabel.shape)
 print(testimg.shape)
 print(testlabels.shape)
